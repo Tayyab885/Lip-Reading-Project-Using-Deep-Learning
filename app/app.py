@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import tensorflow as tf
 import moviepy.editor as moviepy
+import imageio
 
 
 from utils import load_data, num_to_char
@@ -27,10 +28,12 @@ if options:
         st.subheader('Video')
         st.info('The Video below display the converted video in mp4 format')
         file_path = os.path.join('..','data','s1',video_path)
-        clip = moviepy.VideoFileClip(file_path)
-        clip.write_videofile('test_video.mp4')
-        gray_clip = clip.fx(moviepy.vfx.blackwhite)
-        gray_clip.write_gif('animation.gif')
+        # os.system(f'ffmpeg -i {file_path} -vcodec libx264 test_video.mp4 -y')
+        
+        # clip = moviepy.VideoFileClip(file_path)
+        # clip.write_videofile('test_video.mp4')
+        # # gray_clip = clip.fx(moviepy.vfx.blackwhite)
+        # gray_clip.write_gif('animation.gif')
         
         # Display the video
         video = open('test_video.mp4', 'rb')
@@ -43,9 +46,8 @@ if options:
         st.info('This is all the machine learning model sees when making a prediction')
         
         video, annotations = load_data(tf.convert_to_tensor(file_path))
-        # imageio.mimsave('animation.gif', video, fps=10)
+        imageio.mimsave('animation.gif', video, fps=10)
         st.image('animation.gif', width=400) 
-        
         
         st.info('This is the output of the machine learning model as tokens')
         model = load_model()

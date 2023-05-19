@@ -10,20 +10,19 @@ char_to_num = tf.keras.layers.StringLookup(vocabulary=vocab, oov_token="")
 num_to_char = tf.keras.layers.StringLookup(
     vocabulary=char_to_num.get_vocabulary(), invert=True, oov_token="")
 
-def load_video(path:str) -> List[float]:
+def load_video(path:str) -> List[float]: 
+
     cap = cv2.VideoCapture(path)
     frames = []
-    for _ in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))):
+    for _ in range(int(cap.get(cv2.CAP_PROP_FRAME_COUNT))): 
         ret, frame = cap.read()
         frame = tf.image.rgb_to_grayscale(frame)
         frames.append(frame[190:236,80:220,:])
     cap.release()
     
-    frames = tf.cast(frames, tf.float32)
     mean = tf.math.reduce_mean(frames)
-    std = tf.math.reduce_std(frames)
-    frames = (frames - mean) / std
-    return frames
+    std = tf.math.reduce_std(tf.cast(frames, tf.float32))
+    return tf.cast((frames - mean), tf.float32) / std
 
 def load_alignments(path:str) -> List[str]:
     with open(path, 'r') as f:
